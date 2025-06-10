@@ -86,6 +86,23 @@ exports.protect = catchAsync(async (req, res, next) => {
       new AppError('User recently changed password! Please log in again.', 401)
     );
   }
-  req.user = freshUser;
+  req.user = currentUser;
   next();
 });
+
+// Creating a wrapper function so thet we can pass arguments to the function
+
+exports.restrictTo = (...roles) => {
+  return (req, res, next) => {
+    // Roles is an array which in our case : ['Admin', 'Owner']
+    if (!roles.includes(req.user.role)) {
+      return next(
+        new AppError(
+          'You do not have the permission to perform this action',
+          403
+        )
+      );
+    }
+    next();
+  };
+};

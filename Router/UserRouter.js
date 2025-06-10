@@ -8,6 +8,7 @@ router.post('/signup', authController.signup);
 router.post('/login', authController.login);
 
 // For System Admin
+router.use(authController.protect, authController.restrictTo('admin', 'owner'));
 router
   .route('/')
   .get(userController.getAllUser)

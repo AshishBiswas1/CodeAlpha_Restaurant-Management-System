@@ -1,5 +1,6 @@
 const express = require('express');
 const tableController = require('../Controllers/tableController');
+const authController = require('./../Controllers/authController');
 
 const router = express.Router();
 
@@ -8,6 +9,10 @@ router
   .get(tableController.getAllTables)
   .post(tableController.bookTable);
 
+router.use(
+  authController.protect,
+  authController.restrictTo('admin', 'manager', 'owner')
+);
 router
   .route('/:id')
   .get(tableController.getTable)
