@@ -6,6 +6,8 @@ const router = express.Router();
 
 router.post('/signup', authController.signup);
 router.post('/login', authController.login);
+router.post('/forgotPassword', authController.forgotPassword);
+router.post('/resetPassword', authController.resetPassword);
 
 // For System Admin
 router.use(authController.protect, authController.restrictTo('admin', 'owner'));
