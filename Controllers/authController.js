@@ -3,6 +3,7 @@ const catchAsync = require('./../utility/catchAsync');
 const AppError = require('./../utility/appError');
 const jwt = require('jsonwebtoken');
 const { promisify } = require('util');
+const sendEmail = require('./../utility/email');
 const signToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, {
     expiresIn: process.env.JWT_EXPIRES_IN
@@ -119,6 +120,34 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
   await user.save({ validateBeforeSave: false });
 
   // 3) Send it to user's email
+  const resetUrl = `${req.protocol}://${req.get(
+    'host'
+  )}/api/user/resetPassword/${resetToken}`;
+
+  const message = `Forgot your password? Submit a PATCH request with your new password and passwordConfirm to: ${resetUrl}. \nIf you didn't forget your password, please ignore this email!`;
+
+  try {
+    await sendEmail({
+      email: user.email,
+      subject: 'Your password reset token (valid for 10 minutes)',
+      message
+    });
+  } catch (err) {
+    user.createPasswordResetToken = undefined;
+    user.passwordResetExpires = undefined;
+    await user.save({ validateBeforeSave: false });
+    return next(
+      new AppError(
+        'There was an error sending the email. Try again later!',
+        500
+      )
+    );
+  }
+
+  res.status(200).json({
+    status: 'success',
+    message: 'Token sent to email!'
+  });
 });
 
 exports.resetPassword = catchAsync(async (req, res, next) => {});
