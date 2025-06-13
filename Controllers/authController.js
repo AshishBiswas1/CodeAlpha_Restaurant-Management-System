@@ -11,6 +11,18 @@ const signToken = (id) => {
   });
 };
 
+const createandsendToken = (user, statusCode, res) => {
+  const token = signToken(user._id);
+
+  res.status(statusCode).json({
+    status: 'success',
+    token,
+    data: {
+      user
+    }
+  });
+};
+
 exports.signup = catchAsync(async (req, res, next) => {
   const newUser = await User.create({
     name: req.body.name,
@@ -19,15 +31,7 @@ exports.signup = catchAsync(async (req, res, next) => {
     confirmpassword: req.body.confirmpassword
   });
 
-  const token = signToken(newUser._id);
-
-  res.status(201).json({
-    status: 'success',
-    token,
-    data: {
-      user: newUser
-    }
-  });
+  createandsendToken(newUser, 201, res);
 });
 
 exports.login = catchAsync(async (req, res, next) => {
@@ -45,16 +49,12 @@ exports.login = catchAsync(async (req, res, next) => {
     return next(new AppError('Incorrect email or password!', 401));
   }
   // 3) If everything is ok, send the token
-  const token = signToken(user._id);
-
-  res.status(200).json({
-    status: 'Success',
-    token
-  });
+  createandsendToken(user, 200, res);
 });
 
 exports.protect = catchAsync(async (req, res, next) => {
   // 1) Getting token and if it's there
+
   let token;
   if (
     req.headers.authorization &&
@@ -177,9 +177,27 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
   // 3) Update changedPasswowordAt property for the user
 
   // 4) Log the user in, sent JWT to client
-  const token = signToken(user._id);
-  res.status(200).json({
-    status: 'success',
-    token
-  });
+  createandsendToken(user, 200, res);
+});
+
+exports.updatePassword = catchAsync(async (req, res, next) => {
+  // 1) Get user from collection
+  const user = await User.findById(req.user.id).select('+password');
+
+  if (!user) {
+    return next(new AppError('User not found', 404));
+  }
+
+  // 2)Check if the posted current password is correct
+  if (!(await user.correctPassword(req.body.currentPassword, user.password))) {
+    return next(new AppError('Your current password is wrong.', 401));
+  }
+
+  // 3) If so, update password
+  user.password = req.body.password;
+  user.confirmpassword = req.body.confirmpassword;
+  await user.save();
+
+  // 4) Log user in. send JWT
+  createandsendToken(user, 200, res);
 });
