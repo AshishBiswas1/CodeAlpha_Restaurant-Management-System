@@ -10,7 +10,7 @@ exports.getAllMenuItems = catchAsync(async (req, res, next) => {
   }
 
   res.status(200).json({
-    total: user.length,
+    total: menuItem.length,
     status: 'Success',
     data: {
       menuItem
