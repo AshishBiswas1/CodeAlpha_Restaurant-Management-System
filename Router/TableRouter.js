@@ -7,7 +7,11 @@ const router = express.Router();
 router
   .route('/')
   .get(tableController.getAllTables)
-  .post(tableController.bookTable);
+  .post(
+    authController.protect,
+    authController.restrictTo('owner'),
+    tableController.addTable
+  );
 
 router.use(
   authController.protect,

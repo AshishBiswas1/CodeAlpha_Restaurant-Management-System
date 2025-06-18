@@ -29,7 +29,7 @@ exports.getTable = catchAsync(async (req, res, next) => {
   });
 });
 
-exports.bookTable = catchAsync(async (req, res, next) => {
+exports.addTable = catchAsync(async (req, res, next) => {
   const { tableNumber, capacity, location } = req.body;
 
   const table = await Table.create({
