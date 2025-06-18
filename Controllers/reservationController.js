@@ -79,7 +79,9 @@ exports.updateReservation = catchAsync(async (req, res, next) => {
 });
 
 exports.deleteReservation = catchAsync(async (req, res, next) => {
-  const reservation = await Reservation.findByIdAndDelete(req.params.id);
+  const reservation = await Reservation.findOneAndDelete({
+    _id: req.params.id
+  });
 
   if (!reservation) {
     return next(new AppError('No reservation found with that ID', 404));
