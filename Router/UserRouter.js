@@ -4,6 +4,8 @@ const authController = require('./../Controllers/authController');
 
 const router = express.Router();
 
+router.get('/me', authController.protect, userController.getMe);
+
 router.post('/signup', authController.signup);
 router.post('/login', authController.login);
 router.post('/forgotPassword', authController.forgotPassword);
@@ -13,10 +15,14 @@ router.patch(
   authController.protect,
   authController.updatePassword
 );
-router.patch('/updateMe', authController.protect, userController.updateMe);
+
+router.use(authController.protect);
+
+router.patch('/updateMe', userController.updateMe);
+router.delete('/deleteMe', userController.deleteMe);
 
 // For System Admin
-router.use(authController.protect, authController.restrictTo('admin', 'owner'));
+router.use(authController.restrictTo('admin', 'owner'));
 router
   .route('/')
   .get(userController.getAllUser)

@@ -113,3 +113,29 @@ exports.updateMe = catchAsync(async (req, res, next) => {
     }
   });
 });
+
+exports.deleteMe = catchAsync(async (req, res, next) => {
+  // 1) Find user and set isActive to false
+  await User.findByIdAndUpdate(req.user.id, { isActive: false });
+  // 2) Send response
+  res.status(204).json({
+    status: 'Success',
+    data: null
+  });
+});
+
+exports.getMe = catchAsync(async (req, res, next) => {
+  req.params.id = req.user.id; // Overwrite the id with the logged in user id
+  const user = await User.findById(req.params.id);
+
+  if (!user) {
+    return next(new AppError('The user with that id was not found!', 404));
+  }
+
+  res.status(200).json({
+    status: 'Success',
+    data: {
+      user
+    }
+  });
+});
