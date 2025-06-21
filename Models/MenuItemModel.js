@@ -56,12 +56,7 @@ const menuItemSchema = mongoose.Schema(
     },
     image: {
       type: String,
-      validate: {
-        validator: function (val) {
-          return /^https?:\/\/.*\.(jpeg|jpg|gif|png)$/.test(val);
-        },
-        message: 'Please provide a valid image URL'
-      }
+      default: 'default.jpg'
     }
   },
   {
