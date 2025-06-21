@@ -11,6 +11,7 @@ const UserRouter = require('./Router/UserRouter');
 const TableRouter = require('./Router/tableRouter');
 const ReservationRouter = require('./Router/reservationRouter');
 const ReviewRouter = require('./Router/ReviewRouter');
+const InvntoryRouter = require('./Router/InventoryRouter');
 const AppError = require('./utility/appError');
 const globalErrorHandeler = require('./Controllers/errorController');
 const app = express();
@@ -55,6 +56,7 @@ app.use('/api/Resturent-Management/user', UserRouter);
 app.use('/api/Resturent-Management/table', TableRouter);
 app.use('/api/Resturent-Management/reservation', ReservationRouter);
 app.use('/api/Resturent-Management/review', ReviewRouter);
+app.use('/api/Resturent-Management/inventory', InvntoryRouter);
 
 app.all('*', (req, res, next) => {
   next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
