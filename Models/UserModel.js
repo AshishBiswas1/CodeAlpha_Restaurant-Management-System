@@ -80,10 +80,10 @@ userSchema.pre('save', async function (next) {
 
   this.password = await bcrypt.hash(this.password, 12);
   this.confirmpassword = undefined;
-  next();
   if (!this.isNew) {
     this.passwordChangedAt = Date.now() - 1000; //Token is issued after the password was changed
   }
+  next();
 });
 
 userSchema.pre('save', function (next) {
