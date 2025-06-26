@@ -18,7 +18,12 @@ router.patch(
 
 router.use(authController.protect);
 
-router.patch('/updateMe', userController.updateMe);
+router.patch(
+  '/updateMe',
+  userController.uploadUserPhoto,
+  userController.resizUserPhoto,
+  userController.updateMe
+);
 router.delete('/deleteMe', userController.deleteMe);
 
 // For System Admin

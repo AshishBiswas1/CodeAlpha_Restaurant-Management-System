@@ -67,6 +67,10 @@ const userSchema = mongoose.Schema(
     },
     passwordResetExpires: {
       type: Date
+    },
+    image: {
+      type: String,
+      default: 'default.jpg'
     }
   },
   {

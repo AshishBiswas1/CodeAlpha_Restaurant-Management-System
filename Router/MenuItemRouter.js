@@ -23,6 +23,8 @@ router
   .get(MenuItemController.getOneMenuItem)
   .patch(
     authController.restrictTo('admin', 'manager', 'owner'),
+    MenuItemController.uploadItemPhoto,
+    MenuItemController.resizeItemPhoto,
     MenuItemController.updateItem
   )
   .delete(
