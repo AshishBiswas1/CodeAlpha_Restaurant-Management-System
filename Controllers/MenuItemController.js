@@ -1,9 +1,15 @@
 const MenuItem = require('../Models/MenuItemModel');
 const catchAsync = require('./../utility/catchAsync');
 const AppError = require('./../utility/appError');
+const APIFeatures = require('./../utility/apiFeatures');
 
 exports.getAllMenuItems = catchAsync(async (req, res, next) => {
-  const menuItem = await MenuItem.find();
+  const features = new APIFeatures(MenuItem.find(), req.query)
+    .filter()
+    .sort()
+    .limitFields()
+    .paginate();
+  const menuItem = await features.query;
 
   if (!menuItem) {
     return next(new AppError('No Items where found in the menu', 404));
