@@ -8,7 +8,7 @@ router
   .route('/')
   .get(
     authController.protect,
-    authController.restrictTo('manager'),
+    authController.restrictTo('manager', 'owner', 'admin'),
     OrderController.getAllOrder
   )
   .post(OrderController.placeOrder);
