@@ -31,16 +31,12 @@ exports.getReview = catchAsync(async (req, res, next) => {
   });
 });
 
-exports.setMenuItemUserIds = (req, res, next) => {
-  if (!req.body.menuItem) req.body.menuItem = req.params.menuItemId;
-  if (!req.body.user) req.body.user = req.user.id;
-  next();
-};
-
 exports.createReview = catchAsync(async (req, res, next) => {
   const newReview = await Review.create({
     review: req.body.review,
-    rating: req.body.rating
+    rating: req.body.rating,
+    user: req.user.id,
+    menuItem: req.params.menuItemId
   });
 
   res.status(201).json({

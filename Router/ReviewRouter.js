@@ -6,14 +6,9 @@ const router = express.Router({ mergeParams: true });
 
 router.use(authController.protect);
 
-router
-  .route('/')
-  .get(reviewController.getAllReviews)
-  .post(
-    authController.restrictTo('user'),
-    reviewController.setMenuItemUserIds,
-    reviewController.createReview
-  );
+router.route('/createReview/:menuItemId').post(reviewController.createReview);
+
+router.route('/').get(reviewController.getAllReviews);
 
 router
   .route('/:id')

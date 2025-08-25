@@ -74,12 +74,13 @@ reviewSchema.statics.calcAverageRatings = async function (menuItemId) {
   }
 };
 
-reviewSchema.post('save', function () {
-  this.constructor.calcAverageRatings(this.menuItem);
+reviewSchema.post('save', async function () {
+  await this.constructor.calcAverageRatings(this.menuItem);
 });
 
 reviewSchema.pre(/^findOneAnd/, async function (next) {
-  this.r = await this.findOne();
+  this.r = await this.model.findOne(this.getQuery());
+  console.log('clone complete');
   next();
 });
 
