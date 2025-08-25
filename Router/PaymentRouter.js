@@ -14,6 +14,7 @@ router.post('/record', paymentController.createPaymentRecord);
 router.patch('/update-status', paymentController.updatePaymentStatus);
 
 // Optional admin routes
+router.use(authController.protect, authController.restrictTo('admin'));
 router.get('/', paymentController.getAllPayments);
 router.get('/:sessionId', paymentController.getPaymentBySessionId);
 
