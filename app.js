@@ -51,6 +51,13 @@ const limiter = rateLimit({
 
 app.use('/api', limiter);
 
+app.get('/', (req, res, next) => {
+  res.status(200).json({
+    status: 'success',
+    message: 'Welcome to Resturent Management System API'
+  });
+});
+
 app.use('/api/Resturent-Management/menu', MenuItemRouter);
 app.use('/api/Resturent-Management/order', OrderRouter);
 app.use('/api/Resturent-Management/user', UserRouter);
