@@ -1,5 +1,5 @@
 const AppError = require('./../utility/appError');
-const handleCastErrorDB = () => {
+const handleCastErrorDB = (err) => {
   const message = `Invalid ${err.path} : ${err.value}.`;
   return new AppError(message, 400);
 };
@@ -14,7 +14,7 @@ const handleDuplicateFieldsDB = (err) => {
   return new AppError(message, 400);
 };
 
-const hancleValidationErrorDB = () => {
+const hancleValidationErrorDB = (err) => {
   const errors = Object.values(err.errors).map((el) => el.message);
 
   const message = `Invalid Input Data. ${errors.join('. ')}`;
@@ -68,9 +68,10 @@ module.exports = (err, req, res, next) => {
     error.code = err.code;
     error.keyValue = err.keyValue;
 
-    if (error.name === 'CastError') error = handleCastErrorDB();
+    if (error.name === 'CastError') error = handleCastErrorDB(error);
     if (error.code === 11000) error = handleDuplicateFieldsDB(error);
-    if (error.name === 'ValidationError') error = hancleValidationErrorDB();
+    if (error.name === 'ValidationError')
+      error = hancleValidationErrorDB(error);
     if (error.name === 'JsonWebTokenError') error = handleJWTError();
     if (error.name === 'TokenExpiredError') error = handleTokenExpiredError();
     sendErrorProd(error, res);
